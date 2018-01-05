@@ -6,21 +6,30 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 17:55:23 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/04 19:52:53 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/04 20:15:53 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 int		get_next_line(const int fd, char **line)
 {
 	static t_history	io[1024];
-	int					ret;
 
-	if (!io[fd] || !io.buffer[io.head])
+	read_file(fd, &io[fd]);
+
+}
+
+void	read_file(const int fd, t_history *io)
+{
+	int		ret;
+	char	*temp;
+
+	if (io || io.buffer[io.head] == '\0')
 	{
+		temp = (char *)malloc(sizeof(char *) * (BUFF_SIZE + 1))
 		ret = read(fd, io.buffer, BUFF_SIZE);
+		free(io.buffer);
 		io.buffer[ret] = '\0';
 	}
-
 }
 
 void	ft_putstr(char *str)
