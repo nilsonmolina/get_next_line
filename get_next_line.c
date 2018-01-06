@@ -10,26 +10,62 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line.h"
+
 int		get_next_line(const int fd, char **line)
 {
-	static t_history	io[1024];
+	static t_memory	mem[1024];
 
-	read_file(fd, &io[fd]);
-
+	if (!mem[fd]->history || mem[fd]->history[mem[fd]->head])
+	{
+		read_file(fd, &mem[fd]);
+	}
+	read_file(fd, &mem[fd]);
+	return (1);
 }
 
-void	read_file(const int fd, t_history *io)
+void	read_file(const int fd, t_memory *mem)
 {
 	int		ret;
-	char	*temp;
+	char	buffer[BUFF_SIZE + 1];
 
-	if (io || io.buffer[io.head] == '\0')
+	if (mem || mem->history[mem->head] == '\0')
 	{
-		temp = (char *)malloc(sizeof(char *) * (BUFF_SIZE + 1))
-		ret = read(fd, io.buffer, BUFF_SIZE);
-		free(io.buffer);
-		io.buffer[ret] = '\0';
+		ret = read(fd, mem->history, BUFF_SIZE);
+		free(mem->history);
 	}
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*str;
+	int		index;
+	int		iterator;
+
+	if (!(s1 && s2))
+		return (NULL);
+	str = (char *)malloc(sizeof(*str) * (ft_strlen(s1) + ft_strlen(s2)));
+	if (!str)
+		return (NULL);
+	index = 0;
+	iterator = 0;
+	while (s1[iterator])
+		str[index++] = s1[iterator++];
+	iterator = 0;
+	while (s2[iterator])
+		str[index++] = s2[iterator++];
+	str[index] = '\0';
+	return (str);
+}
+
+size_t	ft_strlen(const char *s)
+{
+	size_t count;
+
+	count = 0;
+	while (s[count])
+		count++;
+	return (count);
 }
 
 void	ft_putstr(char *str)

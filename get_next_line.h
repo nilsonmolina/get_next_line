@@ -13,16 +13,21 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# include <fcntl.h>
-# include <unistd.h>
 # include <stdlib.h>
+# include <unistd.h>
+# include <fcntl.h>
 
 # define BUFF_SIZE 32
 
-typedef struct	s_history
+typedef struct	s_memory
 {
-	char	*buffer[BUFF_SIZE + 1];
+	char	*history;
 	int		head;
-}				t_history;
+}				t_memory;
 
 int		get_next_line(const int fd, char **line);
+void	read_file(const int fd, t_memory *io);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *s);
+
+#endif
