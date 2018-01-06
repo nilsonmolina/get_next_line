@@ -21,7 +21,7 @@
 
 typedef struct	s_memory
 {
-	char	*history;
+	char	buf[BUFF_SIZE + 1];
 	int		head;
 }				t_memory;
 

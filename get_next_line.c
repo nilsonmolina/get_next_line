@@ -15,12 +15,23 @@
 int		get_next_line(const int fd, char **line)
 {
 	static t_memory	mem[1024];
+	t_memory		curr;
+	char			*tmp;
 
-	if (!mem[fd]->history || mem[fd]->history[mem[fd]->head])
+	curr = mem[fd];
+	if (!curr.buf)
+		read_file(fd, &curr);
+	if (!line)
+		line = (char *)malloc(sizeof(char));
+	while (curr.buf[curr.head] != '/n')
 	{
-		read_file(fd, &mem[fd]);
+		if (curr.buf[curr.head++] == '\0')
+		{
+			line = ft_strjoin(line, curr.buf);
+			read_file(fd, &curr);
+			curr.head = 0;
+		}
 	}
-	read_file(fd, &mem[fd]);
 	return (1);
 }
 
@@ -29,11 +40,8 @@ void	read_file(const int fd, t_memory *mem)
 	int		ret;
 	char	buffer[BUFF_SIZE + 1];
 
-	if (mem || mem->history[mem->head] == '\0')
-	{
-		ret = read(fd, mem->history, BUFF_SIZE);
-		free(mem->history);
-	}
+	ret = read(fd, mem->buf, BUFF_SIZE);
+	mem->buf[ret] == '\0';
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
