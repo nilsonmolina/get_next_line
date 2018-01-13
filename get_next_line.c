@@ -6,7 +6,7 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 17:55:23 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/12 22:36:59 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/12 23:12:57 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,11 @@ int		get_next_line(const int fd, char **line)
 	if (fd > 4096 || fd < 0 || !line)
 		return (-1);
 	file = &mem[fd];
-	*line = (char *)malloc(sizeof(char));
-	if (!*line)
-		return (-1);
-	*line[0] = '\0';
+	*line = ft_empty_str();
 	while (file->buf[file->head] != '\n')
 	{
-		if (file->buf[file->head] == '\0')
+		if (file->buf[file->head] == '\0' && (ret = read_file(fd, file)) < 1)
 		{
-			ret = read_file(fd, file);
 			if (ret == -1)
 				return (-1);
 			if (ret == 0 && !*line[0])
@@ -45,9 +41,21 @@ int		get_next_line(const int fd, char **line)
 	return (1);
 }
 
+char	*ft_empty_str(void)
+{
+	char *str;
+
+	str = (char *)malloc(sizeof(char));
+	if (!str)
+		return (NULL);
+	str[0] = '\0';
+	return (str);
+}
+
 int		read_file(const int fd, t_memory *file)
 {
 	int		ret;
+
 	ret = read(fd, file->buf, BUFF_SIZE);
 	if (ret < 0)
 		return (-1);
