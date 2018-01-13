@@ -1,4 +1,0 @@
-This is a simple test of get_next_line
-I don't really know how this will
-end up
-working but let us see how it goes.
