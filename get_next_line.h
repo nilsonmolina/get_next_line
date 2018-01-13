@@ -6,7 +6,7 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 18:45:02 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/12 23:15:21 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/13 00:01:59 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 
-# define BUFF_SIZE 32
+# define BUFF_SIZE 10000
 
 typedef struct	s_memory
 {

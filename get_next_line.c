@@ -6,7 +6,7 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 17:55:23 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/12 23:12:57 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/12 23:58:48 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int		get_next_line(const int fd, char **line)
 		}
 		if (file->buf[file->head] != '\n')
 			*line = ft_straddchar(*line, file->buf[file->head]);
+		else
+			break;
 		file->head++;
 	}
 	file->head++;
