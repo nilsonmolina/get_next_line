@@ -6,7 +6,7 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 17:55:23 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/12 17:25:01 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/12 21:22:31 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,49 +14,60 @@
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_memory	mem[1024];
-	t_memory		scan;
+	static t_memory	mem[4096];
+	t_memory		*file;
+	int				ret;
 
-	scan = mem[fd];
-	if (!scan.buf[0])
-		read_file(fd, &scan);
+	if (fd > 4096)
+		return (-1);
+	file = &mem[fd];
 	*line = (char *)malloc(sizeof(char));
 	*line[0] = '\0';
-	while (scan.buf[scan.head] != '\n')
+	while (file->buf[file->head] != '\n')
 	{
-		if (scan.buf[scan.head] == '\0')
-			read_file(fd, &scan);
-		else
-			*line = ft_straddchar(line, scan.buf[scan.head]);
-		scan.head++;
+		if (file->buf[file->head] == '\0')
+		{
+			ret = read_file(fd, file);
+			if (ret == -1)
+				return (-1);
+			if (ret == 0)
+				return (0);
+		}
+		if (file->buf[file->head] != '\n')
+			*line = ft_straddchar(*line, file->buf[file->head]);
+		file->head++;
 	}
-	scan.head++;
+	file->head++;
 	return (1);
 }
 
-void	read_file(const int fd, t_memory *mem)
+int		read_file(const int fd, t_memory *file)
 {
 	int		ret;
-	char	buffer[BUFF_SIZE + 1];
-
-	ret = read(fd, mem->buf, BUFF_SIZE);
-	mem->buf[ret] = '\0';
-	mem->head = 0;
+	ret = read(fd, file->buf, BUFF_SIZE);
+	if (ret < 0)
+		return (-1);
+	file->buf[ret] = '\0';
+	file->head = 0;
+	return (ret);
 }
 
-char	*ft_straddchar(char **src, char c)
+char	*ft_straddchar(char *src, char c)
 {
 	char	*str;
 	int		index;
 
 	if (!(src && c))
 		return (NULL);
-	str = (char *)malloc(sizeof(*str) * (ft_strlen(*src) + 2));
+	str = (char *)malloc(sizeof(char) * (ft_strlen(src) + 2));
 	if (!str)
 		return (NULL);
-	index = -1;
-	while (src[++index])
-		str[index] = *src[index];
+	index = 0;
+	while (src[index])
+	{
+		str[index] = src[index];
+		index++;
+	}
 	str[index++] = c;
 	str[index] = '\0';
 	free(src);
@@ -71,26 +82,4 @@ size_t	ft_strlen(const char *s)
 	while (s[count])
 		count++;
 	return (count);
-}
-
-void	ft_putstr(char *str)
-{
-	int i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	write(1, str, i);
-	write(1, "\n", 1);
-}
-
-int		main(int argc, char **argv)
-{
-	char	*line;
-
-	if (argc != 2)
-		return (1);
-	get_next_line(open(argv[1], O_RDONLY), &line);
-	ft_putstr(line);
-	return (0);
 }

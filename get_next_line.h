@@ -6,7 +6,7 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 18:45:02 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/12 17:24:58 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/12 21:23:55 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,11 @@ typedef struct	s_memory
 {
 	char	buf[BUFF_SIZE + 1];
 	int		head;
-}				t_memory;
+}						t_memory;
 
 int		get_next_line(const int fd, char **line);
-void	read_file(const int fd, t_memory *io);
-char	*ft_straddchar(char **src, char c);
+int		read_file(const int fd, t_memory *file);
+char	*ft_straddchar(char *src, char c);
 size_t	ft_strlen(const char *s);
-void	ft_putstr(char *str);
 
 #endif
