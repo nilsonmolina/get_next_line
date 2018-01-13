@@ -6,7 +6,7 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 17:55:23 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/04 20:15:53 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/12 17:25:01 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,22 @@
 int		get_next_line(const int fd, char **line)
 {
 	static t_memory	mem[1024];
-	t_memory		curr;
-	char			*tmp;
+	t_memory		scan;
 
-	curr = mem[fd];
-	if (!curr.buf)
-		read_file(fd, &curr);
-	if (!line)
-		line = (char *)malloc(sizeof(char));
-	while (curr.buf[curr.head] != '/n')
+	scan = mem[fd];
+	if (!scan.buf[0])
+		read_file(fd, &scan);
+	*line = (char *)malloc(sizeof(char));
+	*line[0] = '\0';
+	while (scan.buf[scan.head] != '\n')
 	{
-		if (curr.buf[curr.head++] == '\0')
-		{
-			line = ft_strjoin(line, curr.buf);
-			read_file(fd, &curr);
-			curr.head = 0;
-		}
+		if (scan.buf[scan.head] == '\0')
+			read_file(fd, &scan);
+		else
+			*line = ft_straddchar(line, scan.buf[scan.head]);
+		scan.head++;
 	}
+	scan.head++;
 	return (1);
 }
 
@@ -41,28 +40,26 @@ void	read_file(const int fd, t_memory *mem)
 	char	buffer[BUFF_SIZE + 1];
 
 	ret = read(fd, mem->buf, BUFF_SIZE);
-	mem->buf[ret] == '\0';
+	mem->buf[ret] = '\0';
+	mem->head = 0;
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_straddchar(char **src, char c)
 {
 	char	*str;
 	int		index;
-	int		iterator;
 
-	if (!(s1 && s2))
+	if (!(src && c))
 		return (NULL);
-	str = (char *)malloc(sizeof(*str) * (ft_strlen(s1) + ft_strlen(s2)));
+	str = (char *)malloc(sizeof(*str) * (ft_strlen(*src) + 2));
 	if (!str)
 		return (NULL);
-	index = 0;
-	iterator = 0;
-	while (s1[iterator])
-		str[index++] = s1[iterator++];
-	iterator = 0;
-	while (s2[iterator])
-		str[index++] = s2[iterator++];
+	index = -1;
+	while (src[++index])
+		str[index] = *src[index];
+	str[index++] = c;
 	str[index] = '\0';
+	free(src);
 	return (str);
 }
 
