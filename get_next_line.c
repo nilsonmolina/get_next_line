@@ -6,7 +6,7 @@
 /*   By: nmolina <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/04 17:55:23 by nmolina           #+#    #+#             */
-/*   Updated: 2018/01/12 21:22:31 by nmolina          ###   ########.fr       */
+/*   Updated: 2018/01/12 22:36:59 by nmolina          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@ int		get_next_line(const int fd, char **line)
 	t_memory		*file;
 	int				ret;
 
-	if (fd > 4096)
+	if (fd > 4096 || fd < 0 || !line)
 		return (-1);
 	file = &mem[fd];
 	*line = (char *)malloc(sizeof(char));
+	if (!*line)
+		return (-1);
 	*line[0] = '\0';
 	while (file->buf[file->head] != '\n')
 	{
@@ -30,8 +32,10 @@ int		get_next_line(const int fd, char **line)
 			ret = read_file(fd, file);
 			if (ret == -1)
 				return (-1);
-			if (ret == 0)
+			if (ret == 0 && !*line[0])
 				return (0);
+			if (ret == 0 && *line[0])
+				return (1);
 		}
 		if (file->buf[file->head] != '\n')
 			*line = ft_straddchar(*line, file->buf[file->head]);
@@ -57,8 +61,6 @@ char	*ft_straddchar(char *src, char c)
 	char	*str;
 	int		index;
 
-	if (!(src && c))
-		return (NULL);
 	str = (char *)malloc(sizeof(char) * (ft_strlen(src) + 2));
 	if (!str)
 		return (NULL);
